@@ -5,10 +5,11 @@ from utils.logger import setup_logger
 
 logger = setup_logger()
 
+HOURS_BEFORE_DUE = 6
 
 def main():
     try:
-        assignments = get_upcoming_assignments()
+        assignments = get_upcoming_assignments(HOURS_BEFORE_DUE)
         for a in assignments:
             logger.info(f"🔔 Publicando recordatorio: {a['assignment_title']}")
             publish_reminder_event(a)
