@@ -1,0 +1,41 @@
+from datetime import datetime, timedelta, UTC
+from sqlalchemy import and_
+from src.database.db import SessionLocal
+from src.model.assignments import Assignment
+
+
+def get_upcoming_assignments(hours_before_due=6):
+    """Fetch assignments that are 'published' and due within the next X hours."""
+    db = SessionLocal()
+    try:
+        now = datetime.now(UTC)
+        limit = now + timedelta(hours=hours_before_due)
+
+        # Query assignments that are published and due within the time window
+        assignments = (
+            db.query(Assignment)
+            .filter(
+                and_(
+                    Assignment.status == "published",
+                    Assignment.due_date <= limit,
+                    Assignment.due_date >= now,
+                )
+            )
+            .all()
+        )
+
+        assignments_to_remind = []
+        for assignment in assignments:
+            assignments_to_remind.append(
+                {
+                    "event_type": "assignment.reminder",
+                    "assignment_id": str(assignment.id),
+                    "course_id": assignment.course_id,
+                    "assignment_title": assignment.title,
+                    "assignment_due_date": assignment.due_date.isoformat(),
+                }
+            )
+
+        return assignments_to_remind
+    finally:
+        db.close()
