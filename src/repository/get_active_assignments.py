@@ -5,6 +5,7 @@ from utils.logger import setup_logger
 
 logger = setup_logger()
 
+
 def get_active_assignments(hours):
     """Get assignments that are published and due within the next X hours."""
     logger.info("Looking for active assignments")
@@ -12,14 +13,14 @@ def get_active_assignments(hours):
     now = datetime.now(UTC)
     limit = now + timedelta(hours=hours)
 
-    # MongoDB query
+    # MongoDB query using proper datetime objects
     assignments = db.assignments.find(
-    {
-        "status": "published",
-        "due_date": {
-            "$lte": limit.isoformat(), # less than or equal to limit
-            "$gte": now.isoformat(), # greater than or equal to now
-        },
-    }
-)
+        {
+            "status": "published",
+            "due_date": {
+                "$lte": limit,  # less than or equal to limit
+                "$gte": now,  # greater than or equal to now
+            },
+        }
+    )
     return [Assignment.from_dict(assignment) for assignment in assignments]
