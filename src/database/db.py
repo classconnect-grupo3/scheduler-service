@@ -1,10 +1,27 @@
 import os
-from pymongo.mongo_client import MongoClient
-from pymongo.database import Database
+from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
+from utils.logger import setup_logger
 
-MONGO_URL = os.getenv("MONGO_URL")
-client = MongoClient(MONGO_URL)
-db = client.scheduler_db  
+logger = setup_logger()
 
-def get_db() -> Database:
-    return db
+
+DB_URI = os.getenv("DB_URI")
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
+
+def get_mongo_client():
+    try:
+        client = MongoClient(
+            DB_URI,
+            username=DB_USERNAME,
+            password=DB_PASSWORD,
+        )
+        # Trigger connection attempt
+        client.admin.command("ping")
+        logger.info("Connected to database")
+        return client
+    except ConnectionFailure as err:
+        logger.error("Failed to connect to database", exc_info=err)
+        return None
