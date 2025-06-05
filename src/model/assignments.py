@@ -105,4 +105,10 @@ class Assignment:
             data["_id"] = ObjectId(data["_id"])
         if data.get("questions"):
             data["questions"] = [Question.from_dict(q) for q in data["questions"]]
+        # Convert string dates to datetime objects if needed
+        for date_field in ["due_date", "created_at", "updated_at"]:
+            if isinstance(data.get(date_field), str):
+                data[date_field] = datetime.fromisoformat(
+                    data[date_field].replace("Z", "+00:00")
+                )
         return cls(**data)
