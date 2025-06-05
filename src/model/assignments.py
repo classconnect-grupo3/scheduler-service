@@ -108,7 +108,15 @@ class Assignment:
         # Convert string dates to datetime objects if needed
         for date_field in ["due_date", "created_at", "updated_at"]:
             if isinstance(data.get(date_field), str):
-                data[date_field] = datetime.fromisoformat(
-                    data[date_field].replace("Z", "+00:00")
-                )
+                # Handle both ISO format with Z and without timezone
+                date_str = data[date_field]
+                if date_str.endswith("Z"):
+                    date_str = date_str.replace("Z", "+00:00")
+                try:
+                    data[date_field] = datetime.fromisoformat(date_str)
+                except ValueError:
+                    # If the string is not in ISO format, try parsing it directly
+                    data[date_field] = datetime.strptime(
+                        date_str, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    )
         return cls(**data)
