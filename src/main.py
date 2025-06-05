@@ -7,16 +7,17 @@ logger = setup_logger()
 
 HOURS_BEFORE_DUE = 6
 
+
 def main():
     try:
         assignments = get_upcoming_assignments(HOURS_BEFORE_DUE)
         for a in assignments:
-            logger.info(f"🔔 Publicando recordatorio: {a['assignment_title']}")
+            logger.info(f"🔔 Publishing reminder: {a['assignment_title']}")
             publish_reminder_event(a)
     except Exception as e:
-        logger.error(f"Fallo al verificar recordatorios: {e}")
+        logger.error(f"❌ Failed to check reminders: {e}")
 
 
 if __name__ == "__main__":
-    logger.info("🚀 Iniciando scheduler")
+    logger.info("🚀 Starting scheduler")
     main()
