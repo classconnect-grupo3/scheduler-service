@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, UTC
-from operator import and_
+from sqlalchemy import and_
 from src.database.db import get_db
 from src.model.assignments import Assignment
 
 
 def get_active_assignments(hours):
-    """Get assignments that are published and due within the next 6 hours."""
+    """Get assignments that are published and due within the next X hours."""
+    db = get_db()
     try:
-        db = get_db()
         now = datetime.now(UTC)
         limit = now + timedelta(hours=hours)
 
