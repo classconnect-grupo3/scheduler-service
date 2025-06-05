@@ -9,13 +9,13 @@ logger = setup_logger()
 def publish_reminder_event(event_data: dict):
     connection = get_rabbitmq_connection()
     channel = connection.channel()
-
-    channel.queue_declare(queue="assignment_reminder_queue", durable=True)
+    queue_name = os.getenv("NOTIFICATIONS_QUEUE_NAME")
+    channel.queue_declare(queue=queue_name, durable=True)
     
     logger.info("Publicando evento")
     channel.basic_publish(
         exchange='',
-        routing_key="assignment_reminder_queue",
+        routing_key=queue_name,
         body=json.dumps(event_data),
         properties=pika.BasicProperties(
             delivery_mode=2  # persistente
