@@ -40,5 +40,4 @@ def get_db():
     try:
         return client[DB_NAME]
     except Exception as e:
-        logger.error(f"Failed to access database '{DB_NAME}': {str(e)}")
-        raise
+        raise ConnectionError(f"Failed to access database '{DB_NAME}': {str(e)}")
