@@ -30,7 +30,15 @@ def get_mongo_client():
 
 def get_db():
     """Get the database instance from the MongoDB client."""
+    if not DB_NAME:
+        raise ValueError("DB_NAME environment variable is not set")
+
     client = get_mongo_client()
     if client is None:
         raise ConnectionError("Failed to connect to database")
-    return client[DB_NAME]  
+
+    try:
+        return client[DB_NAME]
+    except Exception as e:
+        logger.error(f"Failed to access database '{DB_NAME}': {str(e)}")
+        raise
