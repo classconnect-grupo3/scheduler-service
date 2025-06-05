@@ -25,3 +25,11 @@ def get_mongo_client():
     except ConnectionFailure as err:
         logger.error("Failed to connect to database", exc_info=err)
         return None
+
+
+def get_db():
+    """Get the database instance from the MongoDB client."""
+    client = get_mongo_client()
+    if client is None:
+        raise ConnectionError("Failed to connect to database")
+    return client.get_database()
