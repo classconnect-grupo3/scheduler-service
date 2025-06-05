@@ -1,4 +1,4 @@
-from repository.assignment_repository import get_active_assignments
+from repository.get_active_assignments import get_active_assignments
 
 
 def get_upcoming_assignments(hours_before_due):
