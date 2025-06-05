@@ -9,6 +9,7 @@ logger = setup_logger()
 DB_URI = os.getenv("DB_URI")
 DB_USERNAME = os.getenv("DB_USERNAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
 
 
 def get_mongo_client():
@@ -32,4 +33,4 @@ def get_db():
     client = get_mongo_client()
     if client is None:
         raise ConnectionError("Failed to connect to database")
-    return client.get_database()
+    return client[DB_NAME]  
