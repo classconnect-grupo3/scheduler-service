@@ -17,18 +17,26 @@ def get_active_assignments(hours):
         f"Searching for assignments due between {now.isoformat()} and {limit.isoformat()}"
     )
 
-    logger.info(
-        f"[XDD] Searching for assignments due between {now} and {limit}"
-    )
+    logger.info(f"[XDD] Searching for assignments due between {now} and {limit}")
 
     # MongoDB query using proper datetime objects
-    assignments = db.assignments.find(
-        {
-            "status": "published",
-            "due_date": {
-                "$lte": limit.isoformat(),  # less than or equal to limit
-                "$gte": now.isoformat(),  # greater than or equal to now
-            },
-        }
-    )
-    return [Assignment.from_dict(assignment) for assignment in assignments]
+    query = {
+        "status": "published",
+        "due_date": {
+            "$lte": limit,  # less than or equal to limit
+            "$gte": now,  # greater than or equal to now
+        },
+    }
+
+    logger.info(f"MongoDB query: {query}")
+
+    assignments = db.assignments.find(query)
+    results = [Assignment.from_dict(assignment) for assignment in assignments]
+
+    # Log found assignments
+    for assignment in results:
+        logger.info(
+            f"Found assignment: {assignment.title} due at {assignment.due_date}"
+        )
+
+    return results
