@@ -14,12 +14,12 @@ def get_active_assignments(hours):
 
     # MongoDB query
     assignments = db.assignments.find(
-        {
-            "status": "published",
-            "due_date": {
-                "$lte": limit,  # less than or equal to limit
-                "$gte": now,  # greater than or equal to now
-            },
-        }
-    )
+    {
+        "status": "published",
+        "due_date": {
+            "$lte": limit.isoformat(), # less than or equal to limit
+            "$gte": now.isoformat(), # greater than or equal to now
+        },
+    }
+)
     return [Assignment.from_dict(assignment) for assignment in assignments]
