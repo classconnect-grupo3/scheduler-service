@@ -1,6 +1,5 @@
 SQLAlchemy==2.0.39
 psycopg2-binary==2.9.10
-bson
 pika
 pymongo==4.3.3
 python-dotenv==1.0.0
