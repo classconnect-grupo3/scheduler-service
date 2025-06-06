@@ -16,7 +16,7 @@ def main():
     logger.info("🚀 Starting reminder check process")
     try:
         now = datetime.now(UTC)
-        
+
         # Initialize PostgreSQL database
         initialize_database()
 
@@ -30,9 +30,6 @@ def main():
             )
 
             if not reminder_type:
-                logger.info(
-                    f"No reminder needed for assignment {assignment['assignment_id']}"
-                )
                 continue
 
             if was_reminder_sent(assignment["assignment_id"], reminder_type):
