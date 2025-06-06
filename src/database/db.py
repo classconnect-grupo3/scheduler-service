@@ -28,7 +28,7 @@ def get_mongo_client():
         return None
 
 
-def get_db():
+def get_mongo_session():
     """Get the database instance from the MongoDB client."""
     if not DB_NAME:
         raise ValueError("DB_NAME environment variable is not set")
