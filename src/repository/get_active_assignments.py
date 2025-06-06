@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, UTC
-from src.database.db import get_mongo_session
+from database.mongo_db import get_mongo_session
 from src.model.assignments import Assignment
 from utils.logger import setup_logger
 
