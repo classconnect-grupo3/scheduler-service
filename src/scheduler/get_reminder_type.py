@@ -25,10 +25,17 @@ def get_reminder_type(due_date: datetime, now: datetime) -> str | None:
         )
         return ReminderType.HOUR_1
 
-    # Then check if we're in the 24h window (between 0h and 24h30m before due date)
+    # Then check if we're in the 24h window (between 24h and 24h30m before due date)
     elif TimeRanges.HOUR_24_MIN <= delta_hours <= TimeRanges.HOUR_24_MAX:
         logger.debug(
             f"Assignment is {delta_hours:.2f} hours from due date - sending 24h reminder"
+        )
+        return ReminderType.HOUR_24
+
+    # If we're less than 24h but more than 1.5h from due date, send 24h reminder
+    elif delta_hours <= TimeRanges.HOUR_24_MAX and delta_hours > TimeRanges.HOUR_1_MAX:
+        logger.debug(
+            f"Assignment is {delta_hours:.2f} hours from due date - sending 24h reminder (within 24h window)"
         )
         return ReminderType.HOUR_24
 
