@@ -13,11 +13,17 @@ logger = setup_logger()
 
 
 def main():
-    now = datetime.now(UTC)
+    logger.info("🚀 Starting reminder check process")
     try:
+        now = datetime.now(UTC)
+        logger.info(f"Current time: {now}")
+
         # Initialize PostgreSQL database
         init_postgres_db()
+
         assignments = get_upcoming_assignments()
+        logger.info(f"Found {len(assignments)} assignments to process")
+
         for assignment in assignments:
             reminder_type = get_reminder_type(
                 due_date=datetime.fromisoformat(assignment["assignment_due_date"]),
@@ -25,6 +31,9 @@ def main():
             )
 
             if not reminder_type:
+                logger.debug(
+                    f"No reminder needed for assignment {assignment['assignment_id']}"
+                )
                 continue
 
             if was_reminder_sent(assignment["assignment_id"], reminder_type):
@@ -39,5 +48,12 @@ def main():
                 f"✅ Sent {reminder_type} reminder for {assignment['assignment_id']}"
             )
 
+        logger.info("✨ Reminder check process completed successfully")
+
     except Exception as e:
-        logger.error(f"Failed to check reminders: {e}")
+        logger.error(f"❌ Failed to check reminders: {e}")
+        raise  # Re-raise the exception to ensure Railway knows the job failed
+
+
+if __name__ == "__main__":
+    main()
