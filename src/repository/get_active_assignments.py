@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, UTC
 from database.mongo_db import get_mongo_session
 from src.model.assignments import Assignment
 from utils.logger import setup_logger
@@ -6,26 +6,24 @@ from utils.logger import setup_logger
 logger = setup_logger()
 
 
-def get_active_assignments(hours):
-    """Get assignments that are published and due within the next X hours."""
+def get_active_assignments():
+    """Get all published assignments that haven't expired yet."""
     logger.info("Looking for active assignments")
     db = get_mongo_session()
     now = datetime.now(UTC)
-    limit = now + timedelta(hours=hours)
 
-    logger.info(f"Searching for assignments due between {now} and {limit}")
+    logger.info(f"Searching for published assignments due after {now}")
 
     query = {
         "status": "published",
         "due_date": {
-            "$lte": limit,  # less than or equal to limit
-            "$gte": now,  # greater than or equal to now
+            "$gt": now,  # greater than now (not expired)
         },
     }
 
     assignments = db.assignments.find(query)
     results = [Assignment.from_dict(assignment) for assignment in assignments]
 
-    logger.info(f"Found {len(results)} assignments in time window")
+    logger.info(f"Found {len(results)} active assignments")
 
     return results
