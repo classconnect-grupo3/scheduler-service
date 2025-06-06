@@ -38,6 +38,14 @@ class ColoredFormatter(logging.Formatter):
         return result
 
 
+class ImmediateFlushHandler(logging.StreamHandler):
+    """Custom handler that flushes after each emit"""
+
+    def emit(self, record):
+        super().emit(record)
+        self.flush()
+
+
 def setup_logger(name: Optional[str] = None) -> logging.Logger:
     """
     Configure and return a logger with the specified name.
@@ -56,9 +64,8 @@ def setup_logger(name: Optional[str] = None) -> logging.Logger:
     )
 
     # Create console handler with immediate flush
-    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler = ImmediateFlushHandler(sys.stdout)
     console_handler.setFormatter(formatter)
-    console_handler.flush = True  # Ensure immediate flushing
 
     # Get logger
     logger = logging.getLogger(name)
@@ -69,8 +76,5 @@ def setup_logger(name: Optional[str] = None) -> logging.Logger:
 
     # Add handler
     logger.addHandler(console_handler)
-
-    # Force immediate output
-    sys.stdout.reconfigure(line_buffering=True)  # Python 3.7+
 
     return logger
