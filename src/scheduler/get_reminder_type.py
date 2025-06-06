@@ -1,6 +1,9 @@
 from schemas.reminder_type import ReminderType, TimeRanges
 from sqlalchemy.orm import Session
 from datetime import datetime, UTC
+from utils.logger import setup_logger
+
+logger = setup_logger()
 
 
 def get_reminder_type(due_date: datetime, now: datetime) -> str | None:
@@ -11,9 +14,20 @@ def get_reminder_type(due_date: datetime, now: datetime) -> str | None:
         now = now.replace(tzinfo=UTC)
 
     delta_hours = (due_date - now).total_seconds() / 3600
+    logger.debug(f"Time until due date: {delta_hours:.2f} hours")
 
     if TimeRanges.HOUR_24_MIN <= delta_hours <= TimeRanges.HOUR_24_MAX:
+        logger.debug(
+            f"Assignment is {delta_hours:.2f} hours from due date - sending 24h reminder"
+        )
         return ReminderType.HOUR_24
     elif TimeRanges.HOUR_1_MIN <= delta_hours <= TimeRanges.HOUR_1_MAX:
+        logger.debug(
+            f"Assignment is {delta_hours:.2f} hours from due date - sending 1h reminder"
+        )
         return ReminderType.HOUR_1
+
+    logger.debug(
+        f"Assignment is {delta_hours:.2f} hours from due date - no reminder needed"
+    )
     return None
