@@ -10,12 +10,16 @@ logger = setup_logger()
 DATABASE_URL = os.getenv("DATABASE_URL")
 Base = declarative_base()
 
+# Create engine once
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def init_postgres_db():
     """Initialize PostgreSQL database and create tables if they don't exist."""
     try:
-        engine = create_engine(DATABASE_URL)
-        Base.metadata.create_all(engine)
+        # Create all tables
+        Base.metadata.create_all(bind=engine)
         logger.info("✅ PostgreSQL database initialized successfully")
         return engine
     except Exception as e:
@@ -25,6 +29,4 @@ def init_postgres_db():
 
 def get_postgres_session():
     """Get a new PostgreSQL database session."""
-    engine = init_postgres_db()
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     return SessionLocal()
