@@ -1,4 +1,3 @@
-from database.postgres_db import init_postgres_db
 from database.postgres_db_init import initialize_database
 from scheduler.get_reminder_type import get_reminder_type
 from src.retrieve_active_assignments import get_upcoming_assignments
