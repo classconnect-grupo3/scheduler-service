@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, UTC
-from src.database.db import get_db
+from src.database.db import get_mongo_session
 from src.model.assignments import Assignment
 from utils.logger import setup_logger
 
@@ -9,7 +9,7 @@ logger = setup_logger()
 def get_active_assignments(hours):
     """Get assignments that are published and due within the next X hours."""
     logger.info("Looking for active assignments")
-    db = get_db()
+    db = get_mongo_session()
     now = datetime.now(UTC)
     limit = now + timedelta(hours=hours)
 
