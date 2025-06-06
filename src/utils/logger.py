@@ -77,4 +77,10 @@ def setup_logger(name: Optional[str] = None) -> logging.Logger:
     # Add handler
     logger.addHandler(console_handler)
 
+    # Set higher level for library loggers to suppress their debug messages
+    logging.getLogger("pika").setLevel(logging.WARNING)
+    logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("pymongo").setLevel(logging.WARNING)
+
     return logger
