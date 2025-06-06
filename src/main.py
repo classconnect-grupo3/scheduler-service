@@ -16,8 +16,7 @@ def main():
     logger.info("🚀 Starting reminder check process")
     try:
         now = datetime.now(UTC)
-        logger.info(f"Current time: {now}")
-
+        
         # Initialize PostgreSQL database
         initialize_database()
 
@@ -29,8 +28,6 @@ def main():
                 due_date=datetime.fromisoformat(assignment["assignment_due_date"]),
                 now=now,
             )
-
-            logger.debug("hola bro")
 
             if not reminder_type:
                 logger.info(

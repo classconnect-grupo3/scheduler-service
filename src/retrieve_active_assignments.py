@@ -11,7 +11,6 @@ def get_upcoming_assignments():
     assignments_to_remind = []
 
     if len(active_assignments) == 0:
-        logger.info("No active assignments found")
         return assignments_to_remind
 
     logger.info(f"Processing {len(active_assignments)} active assignments")
@@ -26,5 +25,4 @@ def get_upcoming_assignments():
             }
         )
 
-    logger.info(f"Created {len(assignments_to_remind)} reminder events")
     return assignments_to_remind
