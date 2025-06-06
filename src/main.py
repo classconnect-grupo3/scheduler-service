@@ -30,8 +30,10 @@ def main():
                 now=now,
             )
 
+            logger.debug("hola bro")
+
             if not reminder_type:
-                logger.debug(
+                logger.info(
                     f"No reminder needed for assignment {assignment['assignment_id']}"
                 )
                 continue
