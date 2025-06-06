@@ -55,18 +55,22 @@ def setup_logger(name: Optional[str] = None) -> logging.Logger:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    # Create console handler
+    # Create console handler with immediate flush
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
+    console_handler.flush = True  # Ensure immediate flushing
 
     # Get logger
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)  # Show all levels including DEBUG
 
     # Remove existing handlers to avoid duplicates
     logger.handlers = []
 
     # Add handler
     logger.addHandler(console_handler)
+
+    # Force immediate output
+    sys.stdout.reconfigure(line_buffering=True)  # Python 3.7+
 
     return logger
